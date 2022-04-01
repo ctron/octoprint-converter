@@ -1,0 +1,10 @@
+apiVersion: serving.knative.dev/v1
+kind: Service
+metadata:
+  name: octoprint-converter
+spec:
+  template:
+    spec:
+      containers:
+      - image: ghcr.io/ctron/octoprint-converter:latest
+        env:
