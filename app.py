@@ -37,7 +37,64 @@ def convert(channel: str, data):
     if channel.startswith("temperature/"):
         return "org.octoprint.temperature.v1", convert_temperature(str.removeprefix(channel, "temperature/"), data)
 
+    if channel.startswith("progress/printing"):
+        return "org.octoprint.printing.progress.v1", convert_printing_progress(data)
+
+    if channel.startswith("event/"):
+        new_data = convert_event(str.removeprefix(channel, "event/"), data)
+        if new_data:
+            return "org.octoprint.printer.connection.v1", new_data
+
     return None, data
+
+
+def convert_event(name: str, data):
+    timestamp = data["_timestamp"] * 1000
+    if name == "PrinterStateChanged":
+        return printer_state(timestamp, name)
+    if name == "FirmwareData":
+        return {
+
+        }
+
+    return None
+
+
+def printer_firmware(timestamp, data):
+    return {
+        "features": {
+            "firmware": {
+                "timestamp": timestamp,
+                "name": data["name"],
+                "data": data["data"],
+            }
+        }
+    }
+
+
+def printer_state(timestamp, data):
+    return {
+        "features": {
+            "connection": {
+                "timestamp": timestamp,
+                "state": data["state_string"],
+                "state_id": data["state_id"],
+                "connected": data["state_id"] == "OPERATIONAL",
+            }
+        }
+    }
+
+
+def printer_connection(timestamp, state):
+    return {
+        "features": {
+            "printer_connection": {
+                "timestamp": timestamp,
+                "connected": connected,
+                "state": state,
+            }
+        }
+    }
 
 
 def convert_temperature(tool: str, data):
@@ -49,6 +106,19 @@ def convert_temperature(tool: str, data):
                     "actual": data['actual'],
                     "target": data['target']
                 }
+            }
+        }
+    }
+
+
+def convert_printing_progress(data):
+    return {
+        "features": {
+            "printing": {
+                "timestamp": data['_timestamp'] * 1000,
+                "progress": data['progress'],
+                "location": data['location'],
+                "path": data['path'],
             }
         }
     }
