@@ -44,7 +44,7 @@ def convert_temperature(tool: str, data):
     return {
         tool: {
             "temperature": {
-                "timestamp": data['_timestamp'],
+                "timestamp": data['_timestamp'] * 1000,
                 "actual": data['actual'],
                 "target": data['target']
             }
