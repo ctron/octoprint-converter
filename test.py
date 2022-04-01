@@ -38,6 +38,25 @@ def test_unknown_data(client):
     assert r.status_code == 400
 
 
+def test_unknown_event(client):
+    # This data defines a binary cloudevent
+    attributes = {
+        "type": "io.drogue.event.v1",
+        "source": "https://example.com/event-producer",
+        "subject": "foo/bar"
+    }
+    data = {"_timestamp": 1648802831, "foo": "bar"}
+
+    event = CloudEvent(attributes, data)
+    headers, body = to_binary(event)
+
+    r = client.post("/", headers=headers, data=body)
+    assert r.status_code == 200
+
+    event = from_http(r.headers, r.data)
+    assert event.data == {"_timestamp": 1648802831, "foo": "bar"}
+    assert event['type'] == "io.drogue.event.v1"
+
 def test_binary_request(client):
     # This data defines a binary cloudevent
     attributes = {
@@ -59,3 +78,4 @@ def test_binary_request(client):
         "actual": 24.92,
         "target": 0.0
     }
+    assert event['type'] == "org.octoprint.temperature.v1"

@@ -24,7 +24,10 @@ def process(event):
     if type(event.data) is not dict:
         raise ConversionException(f"Unknown data type: {type(event.data)}")
 
-    event.data = convert(channel, event.data)
+    ty, event.data = convert(channel, event.data)
+
+    if ty:
+        event['type'] = ty
     # print(data)
 
     return event
@@ -32,9 +35,9 @@ def process(event):
 
 def convert(channel: str, data):
     if channel.startswith("temperature/"):
-        return convert_temperature(str.removeprefix(channel, "temperature/"), data)
+        return "org.octoprint.temperature.v1", convert_temperature(str.removeprefix(channel, "temperature/"), data)
 
-    return data
+    return None, data
 
 
 def convert_temperature(tool: str, data):
