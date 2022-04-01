@@ -7,4 +7,3 @@ spec:
     spec:
       containers:
       - image: ghcr.io/ctron/octoprint-converter:latest
-        env:
