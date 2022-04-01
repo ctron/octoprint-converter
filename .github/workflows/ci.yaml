@@ -44,4 +44,4 @@ jobs:
           [ "$VERSION" == "main" ] && VERSION=latest
           echo IMAGE_ID=$IMAGE_ID
           echo VERSION=$VERSION
-          docker buildx build . --push --platform linux/amd64,linux/arm64,linux/arm/v7 --tag $IMAGE_ID:$VERSION
+          docker buildx build . --push --platform linux/amd64,linux/arm64 --tag $IMAGE_ID:$VERSION
