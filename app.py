@@ -48,80 +48,58 @@ def convert(channel: str, data):
     return None, data
 
 
+def feature(name: str, properties: dict):
+    return {
+        "features": {
+            name: properties
+        }
+    }
+
+
 def convert_event(name: str, data):
     timestamp = data["_timestamp"] * 1000
     if name == "PrinterStateChanged":
-        return printer_state(timestamp, name)
+        return printer_state(timestamp, data)
     if name == "FirmwareData":
-        return {
-
-        }
+        return printer_firmware(timestamp, data)
 
     return None
 
 
 def printer_firmware(timestamp, data):
-    return {
-        "features": {
-            "firmware": {
-                "timestamp": timestamp,
-                "name": data["name"],
-                "data": data["data"],
-            }
-        }
-    }
+    return feature("firmware", {
+        "timestamp": timestamp,
+        "name": data["name"],
+        "data": data["data"],
+    })
 
 
 def printer_state(timestamp, data):
-    return {
-        "features": {
-            "connection": {
-                "timestamp": timestamp,
-                "state": data["state_string"],
-                "state_id": data["state_id"],
-                "connected": data["state_id"] == "OPERATIONAL",
-            }
-        }
-    }
-
-
-def printer_connection(timestamp, state):
-    return {
-        "features": {
-            "printer_connection": {
-                "timestamp": timestamp,
-                "connected": connected,
-                "state": state,
-            }
-        }
-    }
+    return feature("connection", {
+        "timestamp": timestamp,
+        "state": data["state_string"],
+        "state_id": data["state_id"],
+        "connected": data["state_id"] == "OPERATIONAL",
+    })
 
 
 def convert_temperature(tool: str, data):
-    return {
-        "features": {
-            tool: {
-                "temperature": {
-                    "timestamp": data['_timestamp'] * 1000,
-                    "actual": data['actual'],
-                    "target": data['target']
-                }
-            }
+    return feature(tool, {
+        "temperature": {
+            "timestamp": data['_timestamp'] * 1000,
+            "actual": data['actual'],
+            "target": data['target']
         }
-    }
+    })
 
 
 def convert_printing_progress(data):
-    return {
-        "features": {
-            "printing": {
-                "timestamp": data['_timestamp'] * 1000,
-                "progress": data['progress'],
-                "location": data['location'],
-                "path": data['path'],
-            }
-        }
-    }
+    return feature("printing", {
+        "timestamp": data['_timestamp'] * 1000,
+        "progress": data['progress'],
+        "location": data['location'],
+        "path": data['path'],
+    })
 
 
 @app.route('/', methods=["POST"])
