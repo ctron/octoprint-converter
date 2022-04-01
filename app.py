@@ -42,11 +42,13 @@ def convert(channel: str, data):
 
 def convert_temperature(tool: str, data):
     return {
-        tool: {
-            "temperature": {
-                "timestamp": data['_timestamp'] * 1000,
-                "actual": data['actual'],
-                "target": data['target']
+        "features": {
+            tool: {
+                "temperature": {
+                    "timestamp": data['_timestamp'] * 1000,
+                    "actual": data['actual'],
+                    "target": data['target']
+                }
             }
         }
     }
