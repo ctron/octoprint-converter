@@ -1,10 +1,30 @@
 import os
 
-from flask import Flask, request, Response, make_response
+from flask import Flask, request, make_response
 from cloudevents.exceptions import *
 from cloudevents.http import from_http, to_binary
 
 app = Flask(__name__)
+
+#
+# device state:
+#
+# {
+#   "features": {
+#      "firmware": {
+#         "timestamp: 0,
+#         "name": "",
+#      }
+#      "tool0": {
+#         "temperature": {
+#            "timestamp": 0,
+#            "actual": 23.0,
+#            "target": 200.0,
+#         }
+#      }
+#   }
+# }
+#
 
 
 class ConversionException(Exception):
