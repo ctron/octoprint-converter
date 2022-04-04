@@ -73,8 +73,8 @@ def test_binary_request(client):
     assert r.status_code == 200
 
     event = from_http(r.headers, r.data)
-    assert event.data["tool0"]["temperature"] == {
-        "timestamp": 1648802831,
+    assert event.data["features"]["tool0"]["temperature"] == {
+        "timestamp": 1648802831000,
         "actual": 24.92,
         "target": 0.0
     }
