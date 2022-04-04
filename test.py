@@ -57,6 +57,7 @@ def test_unknown_event(client):
     assert event.data == {"_timestamp": 1648802831, "foo": "bar"}
     assert event['type'] == "io.drogue.event.v1"
 
+
 def test_binary_request(client):
     # This data defines a binary cloudevent
     attributes = {
